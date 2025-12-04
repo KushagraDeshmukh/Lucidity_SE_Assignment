@@ -128,14 +128,6 @@ For production deployments, consider adding:
 
 ---
 
-## **6. Purpose of This Submission**
 
-This repository demonstrates:
 
-- Secure, scalable cross-account VM access  
-- Reliable disk metric collection  
-- Practical alerting  
-- Infrastructure-as-code principles  
-- A design suitable for customer‑facing PoCs  
 
-Prepared for **Lucidity – Sales Engineer Technical Assignment**.
