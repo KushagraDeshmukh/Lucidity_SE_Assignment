@@ -1,0 +1,25 @@
+
+
+This submission outlines a simple, secure, and scalable way to monitor disk usage across EC2 instances in multiple AWS accounts using CloudWatch, Systems Manager, and Ansible.
+
+##Summary of the Approach
+
+- Each EC2 instance runs the CloudWatch Agent, which sends disk usage metrics (like percentage used) to CloudWatch.
+- Ansible automates installing and configuring the agent across instances.
+- Systems Manager (SSM) removes the need for SSH access or key management.
+- CloudWatch Alarms notify teams when disk usage crosses a threshold.
+- Alerts from different accounts can be routed centrally through SNS or EventBridge.
+- Tagging an instance (e.g., `monitoring:disk=true`) automatically includes it in the monitoring scope.
+
+##Why This Approach?
+
+The focus was to avoid adding unnecessary tools and instead make the best use of what’s already available in AWS and Ansible. This keeps the setup lightweight and easier to adopt across multiple teams and accounts.
+
+ ##Note
+
+I approached this assignment in the same way I would support a customer looking for a dependable solution without unnecessary complexity.
+
+The idea is straightforward: EC2 instances send their disk usage metrics to CloudWatch using the CloudWatch Agent. Ansible helps deploy this consistently, and because we rely on Systems Manager, there’s no need to manage SSH keys or open any network access. Once metrics land in CloudWatch, alarms can trigger when disk space starts running low, and notifications can flow to a central account if needed.
+
+The solution is meant to stay easy to manage as environments grow. If a new instance is tagged for monitoring, it automatically becomes part of the setup. My intention was to show a clean, practical design—something that solves the problem clearly without overengineering.
+
