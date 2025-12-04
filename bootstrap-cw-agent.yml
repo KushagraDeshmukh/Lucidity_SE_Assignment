@@ -1,0 +1,37 @@
+- name: Install and Configure CloudWatch Agent on EC2 Instances
+  hosts: all
+  become: yes
+  gather_facts: false
+
+  vars:
+    cw_config_path: /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+
+  tasks:
+
+    - name: Ensure CloudWatch agent directory exists
+      file:
+        path: /opt/aws/amazon-cloudwatch-agent/etc
+        state: directory
+        mode: "0755"
+
+    - name: Deploy CloudWatch agent config template
+      template:
+        src: "../roles/cw_agent/templates/cw-config.json.j2"
+        dest: "{{ cw_config_path }}"
+        owner: root
+        mode: "0644"
+
+    - name: Install CloudWatch Agent
+      package:
+        name: amazon-cloudwatch-agent
+        state: present
+
+    - name: Start CloudWatch Agent
+      shell: >
+        /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl
+        -a fetch-config
+        -m ec2
+        -c file:{{ cw_config_path }}
+        -s
+      args:
+        warn: false

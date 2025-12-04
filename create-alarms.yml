@@ -1,0 +1,19 @@
+- name: Create CloudWatch Alarm for Disk Usage
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    region: us-east-1
+    sns_topic_arn: "arn:aws:sns:us-east-1:123456789012:central-alerts"
+    threshold: 85
+    evaluation_periods: 1
+    period: 300
+
+  tasks:
+
+    - name: Build alarm for each EC2 instance
+      shell: |
+        aws cloudwatch put-metric-alarm           --region {{ region }}           --alarm-name "HighDiskUsage-{{ item }}"           --metric-name disk_used_percent           --namespace CWAgent           --statistic Average           --period {{ period }}           --evaluation-periods {{ evaluation_periods }}           --threshold {{ threshold }}           --comparison-operator GreaterThanOrEqualToThreshold           --dimensions Name=InstanceId,Value={{ item }}           --alarm-actions {{ sns_topic_arn }}
+      loop: "{{ instance_ids }}"
+      when: instance_ids is defined
